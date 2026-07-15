@@ -46,7 +46,7 @@ python3 headless_atc.py
 
 ### Quick Start
 
-1. **Run the simulator**: `python3 headless_atc.py`
+1. **Run the simulator**: `python3 main.py`
 2. **Read the splash screen**: Press any key to begin.
 3. **Watch aircraft spawn**: They'll enter from the edges of your terminal.
 4. **Issue commands** (see below).
@@ -62,6 +62,7 @@ python3 headless_atc.py
 - **Type commands** and press **ENTER** to submit.
 - **ESC**: Clear the input line.
 - **q**: Quit the simulator.
+  **ho**: Hands aircraft over to tower when criteras met.
 
 ### Command Reference
 
