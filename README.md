@@ -1,180 +1,206 @@
 # Headless ATC
 
-A terminal-based air traffic control simulator focused on logic, timing, and separation — not graphics.
+A terminal-based air traffic control simulator focused on logic, timing, and separation—not graphics.
 
-**There is no radar screen. There is no mouse. There is only the airspace, the rules, and your decisions.**
+There is no radar screen. There is no mouse. There is only the airspace, the rules, and your decisions.
 
-Headless ATC is a CLI-first simulation inspired by classic radar-style ATC games, but deliberately implemented as a headless, deterministic system. Aircraft follow real constraints, separation rules apply unforgivingly, and every mistake is yours alone.
+Headless ATC is a CLI-first simulation inspired by classic radar-style ATC games, but deliberately implemented as a deterministic, headless system. Aircraft follow realistic operational constraints, separation rules are enforced continuously, and every decision is yours alone.
 
 ---
 
-## Philosophy
+# Philosophy
 
 > **Python owns the truth. The interface only reports what already happened.**
 
-No hidden automation. No visual crutches. Just altitude, heading, speed, separation, and handoff at the right moment. The terminal is not a limitation — it's the point.
+No hidden automation. No visual shortcuts. Just altitude, heading, speed, separation, and handing aircraft to tower at the right moment.
+
+The terminal is not a limitation—it's the point.
 
 If you enjoy systems thinking, classic simulations, and the quiet stress of managing multiple aircraft with minimal feedback, you're in the right place.
 
 ---
 
-## Features
+# Features
 
-- **Real-world physics**: Aircraft move in nautical-mile geometry with accurate turn rates (3°/sec), climb/descent rates (1,200 ft/min), and speed constraints (160–250 knots).
-- **Separation rules**: Maintain minimum lateral (5 NM warning, 2.5 NM loss) and vertical (1,000 ft warning, 300 ft loss) separation. Violations cost points.
-- **ILS localizer**: Aircraft must be captured in a realistic ±10° approach beam at the 10 NM gate (DME) to become handoff-eligible.
-- **Handoff logic**: Hand aircraft to tower when they meet strict criteria (beam-captured, 10→5 NM window, altitude < 4,000 ft). Successful handoffs award points.
-- **Dynamic spawning**: Aircraft spawn at the screen edges every 40 seconds (tunable), with fairness checks to avoid unsafe starting positions.
-- **Terminal UI**: Real-time display of aircraft position, heading, speed, altitude, and DME distance. No external dependencies beyond Python's `curses`.
+* Realistic aircraft movement using nautical-mile geometry.
+* Standard-rate turns (3°/second).
+* Configurable climb, descent, and speed limits.
+* Continuous lateral and vertical separation monitoring.
+* Instrument Landing System (ILS) localizer capture logic.
+* Realistic handoff window to tower.
+* Dynamic aircraft spawning with fairness checks.
+* Multi-aircraft command handling by callsign or selected aircraft.
+* Modular architecture with separated simulation, rendering, airport, geometry, and command processing.
+* Terminal interface using Python's built-in `curses` library.
 
 ---
 
-## Getting Started
+# Requirements
 
-### Requirements
+* Python 3.8 or newer
+* Linux or macOS terminal with `curses`
+* Windows users should use WSL or install `windows-curses`
 
-- Python 3.7+
-- `curses` (included on Linux/macOS; on Windows, use WSL or install `windows-curses`)
+No external Python packages are required.
 
-### Installation
+---
+
+# Installation
 
 ```bash
 git clone https://github.com/hypomac/headless-atc.git
 cd headless-atc
-python3 headless_atc.py
+python3 main.py
 ```
 
-### Quick Start
-
-1. **Run the simulator**: `python3 main.py`
-2. **Read the splash screen**: Press any key to begin.
-3. **Watch aircraft spawn**: They'll enter from the edges of your terminal.
-4. **Issue commands** (see below).
-5. **Goal**: Hand off approaching aircraft to tower before they leave your airspace. Score points for successful handoffs; lose points for separation violations.
-
 ---
 
-## Controls & Commands
+# Quick Start
 
-### Navigation
+1. Launch the simulator:
 
-- **TAB**: Cycle focus between aircraft.
-- **Type commands** and press **ENTER** to submit.
-- **ESC**: Clear the input line.
-- **q**: Quit the simulator.
-  **ho**: Hands aircraft over to tower when criteras met.
-
-### Command Reference
-
-| Command | Example | Effect |
-|---------|---------|--------|
-| `hdg <0-359>` | `hdg 090` | Set heading of focused aircraft to 090°. |
-| `<CS> hdg <0-359>` | `SE101 hdg 180` | Set heading of specific aircraft (by callsign). |
-| `alt <feet>` | `alt 3500` | Set altitude target. |
-| `<CS> alt <feet>` | `SE101 alt 2000` | Set altitude of specific aircraft. |
-| `spd <knots>` | `spd 180` | Set speed (clamped to 160–250 kt). |
-| `<CS> spd <knots>` | `SE101 spd 200` | Set speed of specific aircraft. |
-| `ho` | `ho` | Request handoff of focused aircraft (if eligible). |
-| `list` | `list` | Show all active aircraft. |
-| `help` | `help` | Show command summary. |
-
-### Heading Convention
-
-- **0°** = North (up)
-- **90°** = East (right)
-- **180°** = South (down)
-- **270°** = West (left)
-
----
-
-## Gameplay
-
-### The Goal
-
-Guide approaching aircraft to the runway via the ILS localizer. Hand them off to tower when they meet strict criteria.
-
-### Handoff Eligibility
-
-An aircraft is ready for handoff when **all** of these are true:
-
-1. **Localizer captured**: Aircraft was detected inside the ±10° approach beam at the 10 NM gate (DME).
-2. **Still in beam**: Aircraft remains inside the beam cone.
-3. **Correct altitude window**: Altitude < 4,000 ft.
-4. **Correct distance window**: Distance from threshold is between 10 NM and 5 NM (the approach corridor).
-
-When eligible, the aircraft tag will show **`HO!`** and the status bar will prompt you. Type `ho` to request the handoff.
-
-### Scoring
-
-- **+25 points** per successful handoff to tower.
-- **−5 points** per loss of separation (triggered if two aircraft are closer than 2.5 NM AND less than 300 ft apart).
-- **Spawn grace period**: No penalty for separation losses within 8 seconds of spawn (prevents unfair conflicts on entry).
-
-### Display Legend
-
-- **Aircraft symbol**: Heading glyph (^, >, v, <) matching the aircraft's direction.
-- **Yellow highlight**: Focused aircraft.
-- **Red**: Warning or loss of separation.
-- **Yellow with `HO!`**: Ready for handoff.
-- **`CAP`**: Localizer captured.
-- **DME**: Distance in nautical miles from runway threshold.
-
----
-
-## Configuration
-
-Key parameters in the code (at the top of `headless_atc.py`):
-
-```python
-SPAWN_INTERVAL = 40.0        # Seconds between spawns
-MAX_AIRCRAFT = 3             # Maximum active aircraft
-BEAM_HALF_ANGLE_DEG = 10.0   # ILS beam half-width
-HO_MIN_NM = 5.0              # Handoff distance window (min)
-HO_MAX_NM = 10.0             # Handoff distance window (max)
-HO_ALT_MAX_FT = 4000         # Handoff altitude limit
-TURN_RATE_DPS = 3.0          # Degrees per second
-CLIMB_RATE_FTPS = 20.0       # Feet per second
+```bash
+python3 main.py
 ```
 
-Adjust these to tune difficulty and gameplay feel.
+2. Press any key on the splash screen.
+3. Aircraft begin entering your airspace.
+4. Select aircraft and issue commands.
+5. Guide arrivals safely toward the runway.
+6. Hand aircraft to tower when they become eligible.
 
 ---
 
-## Architecture
+# Controls
 
-- **Aircraft model** (`class Aircraft`): State representation — position, heading, altitude, speed, ILS capture flags.
-- **Airport geometry** (`build_airport()`): Runway placement and centerline logic.
-- **ILS beam** (`loc_frame()`, `beam_coords()`, `in_loc_beam()`): Localizer geometry and capture logic.
-- **Physics** (`heading_glyph()`, `kt_to_nm_per_sec()`, `distance_xy_nm()`): Motion and distance calculations.
-- **Separation logic**: Continuous checks for loss-of-separation; penalties applied with cooldown.
-- **Terminal UI** (via `curses`): Real-time rendering of airspace, aircraft, runway, and status.
+## Keyboard
 
----
-
-## Credits
-
-**Created by**: Håkon Furdal  
-**With assistance from**: GitHub Copilot  
-**License**: MIT (see `LICENSE`)
-
-The philosophy and design were crafted collaboratively: human vision and decision-making paired with AI-assisted implementation.
+* **TAB** — Cycle selected aircraft
+* **ENTER** — Execute command
+* **ESC** — Clear current command
+* **Q** — Quit simulator
 
 ---
 
-## License
+# Commands
 
-This project is licensed under the MIT License. See `LICENSE` for details.
+| Command                    | Description                                 |
+| -------------------------- | ------------------------------------------- |
+| `hdg <heading>`            | Assign heading                              |
+| `<CALLSIGN> hdg <heading>` | Assign heading to a specific aircraft       |
+| `alt <feet>`               | Assign altitude                             |
+| `<CALLSIGN> alt <feet>`    | Assign altitude to a specific aircraft      |
+| `spd <knots>`              | Assign speed                                |
+| `<CALLSIGN> spd <knots>`   | Assign speed to a specific aircraft         |
+| `ho`                       | Request tower handoff for selected aircraft |
+| `list`                     | Show all active aircraft                    |
+| `help`                     | Display command summary                     |
 
 ---
 
-## Contributing
+# Gameplay
 
-Found a bug? Have an idea for a feature? Feel free to open an issue or submit a pull request.
+Your objective is to safely sequence aircraft onto the runway while maintaining separation.
+
+Successful controllers must:
+
+* Prevent loss of separation.
+* Intercept aircraft onto the ILS localizer.
+* Manage speed and altitude.
+* Hand aircraft to tower during the correct approach window.
+
+Poor timing or incorrect instructions can quickly create conflicts.
 
 ---
 
-## Inspiration
+# Scoring
 
-Inspired by classic radar-style ATC simulators like *Radar Contact* and *Approach*, but stripped to the essentials: logic, timing, and the pure challenge of separation.
+* Successful tower handoff awards points.
+* Separation violations reduce your score.
+* Spawn protection prevents unfair penalties immediately after aircraft enter the airspace.
+
+---
+
+# Configuration
+
+Gameplay parameters are centralized in **`config.py`**.
+
+Values such as:
+
+* Spawn interval
+* Maximum aircraft
+* Turn rate
+* Climb and descent rates
+* Speed limits
+* Separation minima
+* Handoff limits
+
+can be adjusted without modifying the simulation logic.
+
+---
+
+# Project Structure
+
+```
+main.py            Application entry point
+simulation.py      Simulation engine
+renderer.py        Terminal rendering
+commands.py        Command parsing and execution
+airport.py         Airport layout and runway logic
+aircraft.py        Aircraft model
+geometry.py        Navigation and geometry helpers
+callsigns.py       Callsign generation
+config.py          Game configuration
+```
+
+The project follows a modular design where each component has a clearly defined responsibility.
+
+---
+
+# Architecture
+
+The application is organized into independent modules:
+
+* **main.py** — Starts and coordinates the application.
+* **Simulation** — Updates aircraft movement and game state.
+* **Renderer** — Draws the terminal interface.
+* **Airport** — Defines airport geometry and runway information.
+* **Aircraft** — Represents aircraft state and performance.
+* **Geometry** — Navigation mathematics and distance calculations.
+* **Commands** — Parses and executes controller input.
+* **Configuration** — Centralized gameplay constants.
+
+This separation makes the simulator easier to maintain, extend, and test.
+
+---
+
+# License
+
+Released under the MIT License.
+
+See the `LICENSE` file for details.
+
+---
+
+# Credits
+
+Created by **Håkon Furdal**
+
+Developed with assistance from GitHub Copilot and ChatGPT.
+
+The design philosophy, architecture, and gameplay remain driven by human decision-making, with AI serving as a development assistant.
+
+---
+
+# Contributing
+
+Bug reports, suggestions, and pull requests are welcome.
+
+---
+
+# Inspiration
+
+Inspired by classic radar-style ATC simulators while intentionally removing graphical dependencies to focus on controller decision-making, timing, and aircraft separation.
 
 Enjoy the quiet stress. ✈️
+
