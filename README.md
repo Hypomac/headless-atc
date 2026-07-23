@@ -14,7 +14,7 @@ The simulation is authoritative. The client reports the current state—it never
 
 No hidden automation. No magical shortcuts. Just headings, altitudes, speeds, separation minima, and the constant challenge of keeping traffic flowing safely.
 
-The terminal isn't a compromise. It's a natural environment for a long-running simulation that can live on a server, survive disconnects, and be resumed from anywhere with an SSH client.
+The terminal isn't a compromise. It's a natural environment for a long-running simulation that can run locally or on a remote headless server. Tools like tmux fit naturally into this workflow, allowing the simulation to run independently from the terminal session used to interact with it.
 
 If you enjoy systems programming, aviation, Unix tools, and simulations where good decisions matter more than flashy graphics, you're in the right place.
 
