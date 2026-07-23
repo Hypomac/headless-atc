@@ -116,6 +116,7 @@ Headless ATC can run locally or on a remote Linux server. The simulation does no
 ## Project Structure
 
 ```text
+
 main.py            Application entry point
 simulation.py      Simulation engine and game state
 renderer.py        Terminal rendering
@@ -125,21 +126,21 @@ aircraft.py        Aircraft model
 geometry.py        Navigation and geometry helpers
 callsigns.py       Callsign generation
 config.py          Game configuration
-
+```
 The project follows a modular design where each component has a clearly defined responsibility.
 
-Architecture
+## Architecture
 
 The application is organized into independent modules:
 
-main.py — Starts and coordinates the application.
-Simulation — Updates aircraft movement and game state.
-Renderer — Draws the terminal interface.
-Airport — Defines airport geometry and runway information.
-Aircraft — Represents aircraft state and performance.
-Geometry — Navigation mathematics and distance calculations.
-Commands — Parses and executes controller input.
-Configuration — Centralized gameplay constants.
+- `main.py` — Starts and coordinates the application.
+- `Simulation` — Updates aircraft movement and game state.
+- `Renderer` — Draws the terminal interface.
+- `Airport` — Defines airport geometry and runway information.
+- `Aircraft` — Represents aircraft state and performance.
+- `Geometry` — Navigation mathematics and distance calculations.
+- `Commands` — Parses and executes controller input.
+- `Configuration` — Centralized gameplay constants.
 
 This separation makes the simulator easier to maintain, extend, and test.
 
