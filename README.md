@@ -127,6 +127,7 @@ geometry.py        Navigation and geometry helpers
 callsigns.py       Callsign generation
 config.py          Game configuration
 ```
+
 The project follows a modular design where each component has a clearly defined responsibility.
 
 ## Architecture
@@ -144,13 +145,13 @@ The application is organized into independent modules:
 
 This separation makes the simulator easier to maintain, extend, and test.
 
-License
+## License
 
 Released under the MIT License.
 
 See the LICENSE file for details.
 
-Credits
+## Credits
 
 Created by Håkon Furdal
 
@@ -158,11 +159,11 @@ Developed with assistance from GitHub Copilot and ChatGPT.
 
 The design philosophy, architecture, and gameplay decisions remain human-driven, with AI serving as a development assistant.
 
-Contributing
+## Contributing
 
 Bug reports, suggestions, and pull requests are welcome.
 
-Inspiration
+## Inspiration
 
 Inspired by classic radar-style ATC simulators while focusing on controller decision-making, timing, and aircraft separation rather than graphical complexity.
 
