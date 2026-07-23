@@ -41,35 +41,41 @@ No external Python packages are required.
 git clone https://github.com/hypomac/headless-atc.git
 cd headless-atc
 python3 main.py
-Quick Start
+```
+## Quick Start
 
 Launch the simulator:
-
+```
 python3 main.py
-Press any key on the splash screen.
-Aircraft will begin entering your airspace.
-Select aircraft and issue commands.
-Guide arrivals safely toward the runway.
-Hand aircraft to tower when they become eligible.
-Controls
-Keyboard
-Key	Action
-TAB	Cycle selected aircraft
-ENTER	Execute command
-ESC	Clear current command
-Q	Quit simulator
-Commands
-Command	Description
-hdg <heading>	Assign heading
-<CALLSIGN> hdg <heading>	Assign heading to a specific aircraft
-alt <feet>	Assign altitude
-<CALLSIGN> alt <feet>	Assign altitude to a specific aircraft
-spd <knots>	Assign speed
-<CALLSIGN> spd <knots>	Assign speed to a specific aircraft
-ho	Request tower handoff for selected aircraft
-list	Show all active aircraft
-help	Display command summary
-Gameplay
+```
+- Press any key on the splash screen.
+- Aircraft will begin entering your airspace.
+- Select aircraft and issue commands.
+- Guide arrivals safely toward the runway.
+- Hand aircraft to tower when they become eligible.
+
+## Controls
+### Keyboard
+|Key|Action|
+|TAB|Cycle selected aircraft|
+|ENTER|Execute command|
+|ESC|Clear current command|
+|Q|Quit simulator|
+
+## Commands
+|Command|Description|
+|---|---|
+|`hdg <heading>`|Assign heading|
+|`<CALLSIGN> hdg <heading>`|Assign heading to a specific aircraft|
+|`alt <feet>`|Assign altitude|
+|`<CALLSIGN> alt <feet>`|Assign altitude to a specific aircraft|
+|`spd <knots>`|Assign speed|
+|`<CALLSIGN> spd <knots>`|Assign speed to a specific aircraft|
+|`ho`|Request tower handoff for selected aircraft|
+|`list`|Show all active aircraft|
+|`help`|Display command summary|
+
+## Gameplay
 
 Your objective is to safely sequence aircraft onto the runway while maintaining separation.
 
@@ -86,27 +92,30 @@ Scoring
 Successful tower handoff awards points.
 Separation violations reduce your score.
 Spawn protection prevents unfair penalties immediately after aircraft enter the airspace.
-Configuration
 
-Gameplay parameters are centralized in config.py.
+## Configuration
+
+Gameplay parameters are centralized in `config.py`.
 
 Values such as:
 
-Spawn interval
-Maximum aircraft
-Turn rate
-Climb and descent rates
-Speed limits
-Separation minima
-Handoff limits
+- Spawn interval
+- Maximum aircraft
+- Turn rate
+- Climb and descent rates
+- Speed limits
+- Separation minima
+- Handoff limits
 
 can be adjusted without modifying the simulation logic.
 
-Deployment
+## Deployment
 
 Headless ATC can run locally or on a remote Linux server. The simulation does not require a graphical environment, making it suitable for headless machines and terminal-based workflows.
 
-Project Structure
+## Project Structure
+
+```text
 main.py            Application entry point
 simulation.py      Simulation engine and game state
 renderer.py        Terminal rendering
@@ -157,3 +166,4 @@ Inspiration
 Inspired by classic radar-style ATC simulators while focusing on controller decision-making, timing, and aircraft separation rather than graphical complexity.
 
 Enjoy the quiet stress. ✈️
+
