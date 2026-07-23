@@ -1,22 +1,22 @@
 # Headless ATC
 
-A terminal-based air traffic control simulator focused on logic, timing, and separation—not graphics.
+A terminal-first air traffic control simulator focused on logic, timing, and operational decision-making.
 
-There is no radar screen. There is no mouse. There is only the airspace, the rules, and your decisions.
+Named for its deployment model rather than its interface, Headless ATC is designed to run happily on a headless Linux server while players connect over SSH or through persistent tmux sessions. It embraces the Unix philosophy: the simulation runs independently, the client is lightweight, and reconnecting is simply part of the workflow.
 
-Headless ATC is a CLI-first simulation inspired by classic radar-style ATC games, but deliberately implemented as a deterministic, headless system. Aircraft follow realistic operational constraints, separation rules are enforced continuously, and every decision is yours alone.
+Inspired by classic radar ATC games, the simulator models realistic aircraft performance, continuous separation monitoring, and procedural control. Every clearance, every vector, and every descent is your responsibility.
 
 ---
 
 # Philosophy
 
-> **Python owns the truth. The interface only reports what already happened.**
+The simulation is authoritative. The client reports the current state—it never invents it.
 
-No hidden automation. No visual shortcuts. Just altitude, heading, speed, separation, and handing aircraft to tower at the right moment.
+No hidden automation. No magical shortcuts. Just headings, altitudes, speeds, separation minima, and the constant challenge of keeping traffic flowing safely.
 
-The terminal is not a limitation—it's the point.
+The terminal isn't a compromise. It's a natural environment for a long-running simulation that can live on a server, survive disconnects, and be resumed from anywhere with an SSH client.
 
-If you enjoy systems thinking, classic simulations, and the quiet stress of managing multiple aircraft with minimal feedback, you're in the right place.
+If you enjoy systems programming, aviation, Unix tools, and simulations where good decisions matter more than flashy graphics, you're in the right place.
 
 ---
 
@@ -203,4 +203,3 @@ Bug reports, suggestions, and pull requests are welcome.
 Inspired by classic radar-style ATC simulators while intentionally removing graphical dependencies to focus on controller decision-making, timing, and aircraft separation.
 
 Enjoy the quiet stress. ✈️
-
