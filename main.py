@@ -1,3 +1,4 @@
+
 """
 Headless ATC
 
@@ -14,9 +15,11 @@ import time
 
 from airport import Airport
 from simulation import Simulation
+from api_client import APIClient
 from renderer import Renderer
-
+from user_config import get_controller_name, set_controller_name
 from commands import handle_command
+from config import GAME_VERSION
 
 
 
@@ -25,7 +28,7 @@ FRAME_SLEEP = 0.02
 
 
 
-def game_loop(stdscr):
+def game_loop(stdscr, controller_name):
 
     renderer = Renderer()
 
@@ -47,6 +50,12 @@ def game_loop(stdscr):
         airport
     )
 
+    api = APIClient()
+
+    if api.online:
+        simulation.info = "API: online"
+    else:
+        simulation.info = "API: offline"
 
 
     command = ""
@@ -77,78 +86,86 @@ def game_loop(stdscr):
         ch = stdscr.getch()
 
 
-        if ch != -1:
+        if ch in (
+            ord("q"),
+            ord("Q")
+        ) and not command:
+
+            result = api.submit_score(
+                controller_name,
+                simulation.score,
+                simulation.handoffs,
+                GAME_VERSION,
+            )
+
+            if result:
+                simulation.info = "Score submitted."
+
+            else:
+                simulation.info = "Score not submitted."
+
+            break
 
 
-            if ch in (
-                ord("q"),
-                ord("Q")
-            ) and not command:
 
-                break
+        elif ch == 9:
+
+            simulation.focus_next()
 
 
 
-            elif ch == 9:
+        elif ch in (
+            10,
+            13
+        ):
 
-                simulation.focus_next()
+            if command:
 
-
-
-            elif ch in (
-                10,
-                13
-            ):
-
-                if command:
-
-                    ok, msg, focus_idx, ho = (
-                        handle_command(
-                            command,
-                            simulation.aircraft,
-                            simulation.focus_idx
-                        )
+                ok, msg, focus_idx, ho = (
+                    handle_command(
+                        command,
+                        simulation.aircraft,
+                        simulation.focus_idx
                     )
+                )
 
-
-                    command = ""
-
-
-                    if msg:
-
-                        simulation.info = msg
-
-
-
-                    if ho:
-
-                        simulation.handoff(
-                            ho
-                        )
-
-
-
-            elif ch == 27:
 
                 command = ""
 
 
+                if msg:
 
-            elif ch in (
-                curses.KEY_BACKSPACE,
-                127,
-                8
-            ):
-
-                command = command[:-1]
+                    simulation.info = msg
 
 
 
-            else:
+                if ho:
 
-                if 32 <= ch <= 126:
+                    simulation.handoff(ho)
 
-                    command += chr(ch)
+
+
+        elif ch == 27:
+
+            command = ""
+
+
+
+        elif ch in (
+            curses.KEY_BACKSPACE,
+            127,
+            8
+        ):
+
+            command = command[:-1]
+
+
+
+        else:
+
+            if 32 <= ch <= 126:
+
+                command += chr(ch)
 
 
 
@@ -204,6 +221,14 @@ def game_loop(stdscr):
 
 if __name__ == "__main__":
 
+    controller_name = get_controller_name()
+
+    if not controller_name:
+        controller_name = input("controller name: ").strip()
+
+        if controller_name:
+            set_controller_name(controller_name)
+
     curses.wrapper(
-        game_loop
+        lambda stdscr: game_loop(stdscr, controller_name)
     )

@@ -14,7 +14,7 @@ No hidden automation. No magical shortcuts. Just headings, altitudes, speeds, se
 
 The terminal isn't a compromise. It's a natural environment for a long-running simulation that can run locally or on a remote headless server. Tools like tmux fit naturally into this workflow, allowing the simulation to run independently from the terminal session used to interact with it.
 
-If you enjoy aviation, Unix tools, simulations, and systems thinking where good decisions matter more than flashy graphics, you're in the right place.
+If you enjoy aviation, Unix tools, simulations, and systems thinking where good decisions matter more than flashy graphics, this can be fun game for you to try out.
 
 ## Features
 
@@ -92,6 +92,7 @@ Scoring
 Successful tower handoff awards points.
 Separation violations reduce your score.
 Spawn protection prevents unfair penalties immediately after aircraft enter the airspace.
+Later versions includes a setralized scoreboard
 
 ## Configuration
 
@@ -126,6 +127,7 @@ aircraft.py        Aircraft model
 geometry.py        Navigation and geometry helpers
 callsigns.py       Callsign generation
 config.py          Game configuration
+api_client.py      API layer and external integration
 ```
 
 The project follows a modular design where each component has a clearly defined responsibility.
