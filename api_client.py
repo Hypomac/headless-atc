@@ -37,7 +37,8 @@ class APIClient:
             url,
             method="POST",
             headers={
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "User-Agent": "HeadlessATC/0.1.0"
             },
             data=b"{}"
         )
@@ -104,7 +105,8 @@ class APIClient:
             url,
             method="POST",
             headers={
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "User-Agent": "HeadlessATC/0.1.0"
             },
             data=json.dumps(payload).encode("utf-8")
         )
@@ -133,3 +135,39 @@ class APIClient:
         ):
 
             return False
+
+    def get_leaderboard(self):
+
+        url = f"{API_URL}/api/leaderboard"
+
+        request = urllib.request.Request(
+            url,
+            method="GET",
+            headers={
+                "User-Agent": "HeadlessATC/0.1.0"
+            }
+        )
+
+        try:
+
+            with urllib.request.urlopen(
+                request,
+                timeout=API_TIMEOUT_S
+            ) as response:
+
+                data = json.loads(
+                    response.read().decode("utf-8")
+                )
+
+                return data
+
+
+        except (
+            urllib.error.URLError,
+            urllib.error.HTTPError,
+            TimeoutError,
+            OSError,
+            ValueError,
+        ):
+
+            return []
